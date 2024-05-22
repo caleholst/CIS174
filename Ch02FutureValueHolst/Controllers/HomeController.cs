@@ -32,7 +32,7 @@ namespace Ch02FutureValueHolst.Controllers
             };
 
             return View(model);
-            ;
+            
 
         }
     }
