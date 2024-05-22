@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\Ch02FutureValueHolst.props" />
-</Project>
