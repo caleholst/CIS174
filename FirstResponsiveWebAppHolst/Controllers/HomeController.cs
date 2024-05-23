@@ -12,21 +12,29 @@ namespace FirstResponsiveWebAppHolst.Controllers
         {
             _logger = logger;
         }
-
+        [HttpGet]
         public IActionResult Index()
         {
+            ViewBag.Age = string.Empty;
+            ViewBag.Name = string.Empty;
             return View();
         }
-
-        public IActionResult Privacy()
+        [HttpPost]
+        public IActionResult Index(AgeCalculatorModel model)
         {
-            return View();
-        }
+            if (ModelState.IsValid)
+            {
+                ViewBag.Name = model.NameViewBag();
+                ViewBag.Age = model.AgeThisYear();
+                
+            }
+            else
+            {
+                ViewBag.Age = string.Empty;
+                ViewBag.Name = string.Empty;
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+            return View(model);
         }
     }
 }
