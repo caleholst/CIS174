@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34916.146
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsiveWebAppWithTests", "ResponsiveWebAppWithTests.csproj", "{2197145C-06B6-4790-A724-3DE91FD328B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testResponsiveWebApp", "..\testResponsiveWebApp\testResponsiveWebApp.csproj", "{20FB15E0-9ED2-4DBE-9922-CC47F053666E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2197145C-06B6-4790-A724-3DE91FD328B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2197145C-06B6-4790-A724-3DE91FD328B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2197145C-06B6-4790-A724-3DE91FD328B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2197145C-06B6-4790-A724-3DE91FD328B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20FB15E0-9ED2-4DBE-9922-CC47F053666E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20FB15E0-9ED2-4DBE-9922-CC47F053666E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20FB15E0-9ED2-4DBE-9922-CC47F053666E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20FB15E0-9ED2-4DBE-9922-CC47F053666E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C08A378F-C692-4FAC-85A9-E43437004914}
+	EndGlobalSection
+EndGlobal
