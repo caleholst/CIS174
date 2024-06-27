@@ -1,0 +1,28 @@
+﻿@model CIS174_TestCoreApp.ViewModels.Assignment6_1ViewModel
+
+<h1>Assignment 6.1</h1>
+<div class="container">
+    @if (Model.AccessLevel < 2)
+    {
+        <p>You do not have sufficient access level to view this data.</p>
+    }
+    else if (Model.AccessLevel >= 2 && Model.AccessLevel < 8)
+    {
+        <ul>
+            @foreach (var student in Model.Students)
+            {
+                <li>@student.FirstName @student.LastName</li>
+            }
+        </ul>
+    }
+    else if (Model.AccessLevel >= 8)
+    {
+        <h3>Hello Admin</h3>
+        <ul>
+            @foreach (var student in Model.Students)
+            {
+                <li>@student.FirstName @student.LastName - Grade: @student.Grade</li>
+            }
+        </ul>
+    }
+</div>
