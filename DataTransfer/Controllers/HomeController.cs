@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 
 public class HomeController : Controller
 {
@@ -23,5 +25,34 @@ public class HomeController : Controller
 
         model.Countries = query.ToList();
         return View(model);
+    }
+
+    public IActionResult Details(string id)
+    {
+        var country = context.Countries.FirstOrDefault(c => c.CountryID == id);
+        if (country == null)
+        {
+            return NotFound();
+        }
+        return View(country);
+    }
+
+    [HttpPost]
+    public IActionResult AddToFavorites(string id)
+    {
+        var country = context.Countries.FirstOrDefault(c => c.CountryID == id);
+        if (country == null)
+        {
+            return NotFound();
+        }
+
+        var favorites = HttpContext.Session.Get<List<string>>("Favorites") ?? new List<string>();
+        if (!favorites.Contains(id))
+        {
+            favorites.Add(id);
+            HttpContext.Session.Set("Favorites", favorites);
+        }
+
+        return RedirectToAction("Index");
     }
 }

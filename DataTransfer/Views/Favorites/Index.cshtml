@@ -1,0 +1,26 @@
+﻿@model List<Country>
+
+@{
+    ViewData["Title"] = "Favorites";
+}
+
+<h2>Favorites</h2>
+
+@if (!Model.Any())
+{
+    <p>No favorites added.</p>
+}
+else
+{
+    <ul>
+        @foreach (var country in Model)
+        {
+            <li>@country.Name</li>
+        }
+    </ul>
+}
+
+<a asp-action="Index" asp-controller="Home">Return to Home Page</a>
+<form asp-action="Clear" method="post">
+    <button type="submit">Clear Favorites</button>
+</form>

@@ -1,0 +1,16 @@
+﻿@model Country
+
+@{
+    ViewData["Title"] = "Country Details";
+}
+
+<h2>@Model.Name</h2>
+<img src="~/flags/@Model.FlagImage" alt="@Model.Name" />
+<p>Game: @Model.Game.Name</p>
+<p>Category: @Model.Category.Name</p>
+
+<a asp-action="Index" asp-controller="Home">Return to Home Page</a>
+<form asp-action="AddToFavorites" method="post">
+    <input type="hidden" name="id" value="@Model.CountryID" />
+    <button type="submit">Add to Favorites</button>
+</form>

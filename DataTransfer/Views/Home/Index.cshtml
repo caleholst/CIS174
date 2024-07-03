@@ -49,10 +49,18 @@
             @foreach (Country country in Model.Countries)
             {
                 <li class="list-inline-item">
-                    <img src="~/flags/@country.FlagImage"
-                         alt="@country.Name"
-                         title="@($"{country.Name} | {(country.Game != null ? country.Game.Name : "Unknown Game")} | {(country.Category != null ? country.Category.Name : "Unknown Category")}")"
-                         class="flag" />
+                    <div>
+                        <a asp-action="Details" asp-route-id="@country.CountryID">
+                            <img src="~/flags/@country.FlagImage"
+                                 alt="@country.Name"
+                                 title="@($"{country.Name} | {(country.Game != null ? country.Game.Name : "Unknown Game")} | {(country.Category != null ? country.Category.Name : "Unknown Category")}")"
+                                 class="flag" />
+                        </a>
+                        <form asp-action="AddToFavorites" method="post" class="mt-2">
+                            <input type="hidden" name="id" value="@country.CountryID" />
+                            <button type="submit" class="btn btn-primary">Add to Favorites</button>
+                        </form>
+                    </div>
                 </li>
             }
         </ul>
@@ -61,7 +69,7 @@
 
 <style>
     .flag {
-        width: 200px; 
-        height: auto; 
+        width: 200px;
+        height: auto;
     }
 </style>
