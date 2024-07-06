@@ -1,0 +1,13 @@
+﻿@model Ticket
+@{
+    ViewData["Title"] = "Edit Ticket";
+}
+
+<h2>Edit Ticket</h2>
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+</form>

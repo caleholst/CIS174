@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataTransfer.Migrations
 {
     [DbContext(typeof(OlympicContext))]
-    partial class OlympicContextModelSnapshot : ModelSnapshot
+    [Migration("20240706192003_AddDueDateToTicket")]
+    partial class AddDueDateToTicket
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,6 +272,18 @@ namespace DataTransfer.Migrations
                             GameID = "youth",
                             Name = "Portugal"
                         });
+                });
+
+            modelBuilder.Entity("DataTransfer.Models.Sprint", b =>
+                {
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SprintNumber")
+                        .HasColumnType("int");
+
+                    b.ToTable("Sprints");
                 });
 
             modelBuilder.Entity("DataTransfer.Models.Status", b =>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection.Emit;
+using DataTransfer.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class OlympicContext : DbContext
@@ -9,6 +10,9 @@ public class OlympicContext : DbContext
     public DbSet<Country> Countries { get; set; } = null!;
     public DbSet<Game> Games { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
+
+    public DbSet<Ticket> Tickets { get; set; } = null!;
+    public DbSet<Status> Statuses { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

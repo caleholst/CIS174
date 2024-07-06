@@ -1,0 +1,47 @@
+﻿@model Ticket
+
+<h2>New Task</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Add" method="post">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Name:</label>
+        <input asp-for="Name" class="form-control">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Description:</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label">Category:</label>
+        <select asp-for="CategoryId" class="form-select">
+            <option value="">Select a category</option>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <option value="@category.CategoryId">@category.Name</option>
+            }
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DueDate" class="form-label">Due Date:</label>
+        <input asp-for="DueDate" class="form-control" type="date">
+        <span asp-validation-for="DueDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="StatusId" class="form-label">Status:</label>
+        <select asp-for="StatusId" class="form-select">
+            <option value="">Select a status</option>
+            @foreach (var status in ViewBag.Statuses)
+            {
+                <option value="@status.StatusId">@status.Name</option>
+            }
+        </select>
+        <span asp-validation-for="StatusId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+    <a asp-action="Index" class="btn btn-primary">Cancel</a>
+</form>
