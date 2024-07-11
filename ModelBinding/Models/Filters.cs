@@ -5,7 +5,6 @@
         FilterString = filterString ?? "all-all-all";
         string[] filters = FilterString.Split('-');
 
-
         if (filters.Length >= 3)
         {
             CategoryId = filters[0];

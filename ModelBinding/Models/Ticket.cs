@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using ModelBinding.Models;
 
 namespace ModelBinding.Models
 {
@@ -10,7 +9,7 @@ namespace ModelBinding.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Please enter a name.")]
-        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Name can only contain letters and spaces.")] 
+        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Name can only contain letters and spaces.")]
         public string Name { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Please enter a description.")]
@@ -40,6 +39,7 @@ namespace ModelBinding.Models
             }
         }
     }
+
     public class Category
     {
         public string CategoryId { get; set; }

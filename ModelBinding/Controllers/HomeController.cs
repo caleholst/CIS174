@@ -5,91 +5,89 @@ using System.Collections.Generic;
 using System.Linq;
 namespace ModelBinding.Models
 {
-
-
-public class HomeController : Controller
-{
-    private readonly TicketContext _context;
-
-    public HomeController(TicketContext context)
+    public class HomeController : Controller
     {
-        _context = context;
-    }
+        private readonly TicketContext _context;
 
-    public IActionResult Index(string id)
-    {
-        var filters = new Filters(id);
-        ViewBag.Filters = filters;
-        ViewBag.Categories = _context.Categories.ToList();
-        ViewBag.Statuses = _context.Statuses.ToList();
-        ViewBag.DueFilters = Filters.DueFilterValues;
-
-        IQueryable<Ticket> query = _context.Tickets.Include(t => t.Category).Include(t => t.Status);
-
-        if (filters.HasCategory)
+        public HomeController(TicketContext context)
         {
-            query = query.Where(t => t.CategoryId == filters.CategoryId);
+            _context = context;
         }
 
-        if (filters.HasStatus)
+        public IActionResult Index(string id)
         {
-            query = query.Where(t => t.StatusId == filters.StatusId);
-        }
+            var filters = new Filters(id);
+            ViewBag.Filters = filters;
+            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Statuses = _context.Statuses.ToList();
+            ViewBag.DueFilters = Filters.DueFilterValues;
 
-        if (filters.HasDue)
-        {
-            var today = DateTime.Today;
+            IQueryable<Ticket> query = _context.Tickets.Include(t => t.Category).Include(t => t.Status);
 
-            if (filters.IsPast)
+            if (filters.HasCategory)
             {
-                query = query.Where(t => t.DueDate < today);
+                query = query.Where(t => t.CategoryId == filters.CategoryId);
             }
-            else if (filters.IsFuture)
+
+            if (filters.HasStatus)
             {
-                query = query.Where(t => t.DueDate > today);
+                query = query.Where(t => t.StatusId == filters.StatusId);
             }
-            else if (filters.IsToday)
+
+            if (filters.HasDue)
             {
-                query = query.Where(t => t.DueDate == today);
+                var today = DateTime.Today;
+
+                if (filters.IsPast)
+                {
+                    query = query.Where(t => t.DueDate < today);
+                }
+                else if (filters.IsFuture)
+                {
+                    query = query.Where(t => t.DueDate > today);
+                }
+                else if (filters.IsToday)
+                {
+                    query = query.Where(t => t.DueDate == today);
+                }
             }
+
+            var tasks = query.OrderBy(t => t.DueDate).ToList();
+            return View(tasks);
         }
 
-        var tasks = query.OrderBy(t => t.DueDate).ToList();
-        return View(tasks);
-    }
-
-    [HttpGet]
-    public IActionResult Add()
-    {
-        ViewBag.Categories = _context.Categories.ToList();
-        ViewBag.Statuses = _context.Statuses.ToList();
-        var task = new Ticket { StatusId = "open" };
-        return View(task);
-    }
-
-    [HttpPost]
-    public IActionResult Add(Ticket task)
-    {
-        if (ModelState.IsValid)
-        {
-            _context.Tickets.Add(task);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
-        }
-        else
+        [HttpGet]
+        public IActionResult Add()
         {
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Statuses = _context.Statuses.ToList();
+            var task = new Ticket { StatusId = "open" };
             return View(task);
         }
-    }
 
-    [HttpPost]
-    public IActionResult Filter(string[] filter)
-    {
-        string id = string.Join('-', filter);
-        return RedirectToAction("Index", new { id });
-    }
+        [HttpPost]
+        public IActionResult Add(Ticket task)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Tickets.Add(task);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ViewBag.Categories = _context.Categories.ToList();
+                ViewBag.Statuses = _context.Statuses.ToList();
+                return View(task);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Filter(string[] filter)
+        {
+            string id = string.Join('-', filter);
+            return RedirectToAction("Index", new { id });
+        }
 
         [HttpPost]
         public IActionResult MarkCompleted(int taskId)
@@ -106,17 +104,17 @@ public class HomeController : Controller
         }
 
         [HttpPost]
-    public IActionResult DeleteComplete(string id)
-    {
-        var toDelete = _context.Tickets.Where(t => t.StatusId == "closed").ToList();
-
-        foreach (var task in toDelete)
+        public IActionResult DeleteComplete(string id)
         {
-            _context.Tickets.Remove(task);
-        }
+            var toDelete = _context.Tickets.Where(t => t.StatusId == "closed").ToList();
 
-        _context.SaveChanges();
-        return RedirectToAction("Index", new { id });
+            foreach (var task in toDelete)
+            {
+                _context.Tickets.Remove(task);
+            }
+
+            _context.SaveChanges();
+            return RedirectToAction("Index", new { id });
+        }
     }
-}
 }
