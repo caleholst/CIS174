@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ModelBinding.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Moq;
+
 namespace ModelBinding.Models
 {
     public class HomeController : Controller
@@ -116,5 +119,128 @@ namespace ModelBinding.Models
             _context.SaveChanges();
             return RedirectToAction("Index", new { id });
         }
+    }
+}
+
+public class HomeControllerTests
+{
+    private readonly Mock<TicketContext> _mockContext;
+    private readonly HomeController _controller;
+
+    public HomeControllerTests()
+    {
+        var options = new DbContextOptionsBuilder<TicketContext>()
+            .UseInMemoryDatabase(databaseName: "TestDatabase")
+            .Options;
+        var context = new TicketContext(options);
+
+        _mockContext = new Mock<TicketContext>(options);
+        _controller = new HomeController(_mockContext.Object);
+    }
+
+    [Fact]
+    public void Add_Get_ReturnsViewResultWithNewTicket()
+    {
+        // Arrange
+        var categories = new List<Category> { new Category { Id = 1, Name = "Category1" } };
+        var statuses = new List<Status> { new Status { Id = "open", Name = "Open" } };
+        _mockContext.Setup(c => c.Categories.ToList()).Returns(categories);
+        _mockContext.Setup(c => c.Statuses.ToList()).Returns(statuses);
+
+        // Act
+        var result = _controller.Add();
+
+        // Assert
+        var viewResult = Assert.IsType<ViewResult>(result);
+        var model = Assert.IsType<Ticket>(viewResult.Model);
+        Assert.Equal("open", model.StatusId);
+    }
+
+    [Fact]
+    public void Add_Post_ValidModel_RedirectsToIndex()
+    {
+        // Arrange
+        var ticket = new Ticket { Id = 1, Name = "Test", Description = "Test", StatusId = "open", CategoryId = 1 };
+
+        // Act
+        var result = _controller.Add(ticket);
+
+        // Assert
+        var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirectToActionResult.ActionName);
+        _mockContext.Verify(c => c.Tickets.Add(ticket), Times.Once);
+        _mockContext.Verify(c => c.SaveChanges(), Times.Once);
+    }
+
+    [Fact]
+    public void Add_Post_InvalidModel_ReturnsViewWithModel()
+    {
+        // Arrange
+        _controller.ModelState.AddModelError("Name", "Required");
+        var ticket = new Ticket();
+
+        // Act
+        var result = _controller.Add(ticket);
+
+        // Assert
+        var viewResult = Assert.IsType<ViewResult>(result);
+        var model = Assert.IsType<Ticket>(viewResult.Model);
+        Assert.Same(ticket, model);
+        _mockContext.Verify(c => c.Tickets.Add(It.IsAny<Ticket>()), Times.Never);
+        _mockContext.Verify(c => c.SaveChanges(), Times.Never);
+    }
+
+    [Fact]
+    public void Filter_Post_RedirectsToIndexWithFilter()
+    {
+        // Arrange
+        var filters = new[] { "Category1", "Due", "Status1" };
+
+        // Act
+        var result = _controller.Filter(filters);
+
+        // Assert
+        var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirectToActionResult.ActionName);
+        Assert.Equal("Category1-Due-Status1", redirectToActionResult.RouteValues["id"]);
+    }
+
+    [Fact]
+    public void MarkCompleted_Post_ChangesStatusToClosedAndRedirectsToIndex()
+    {
+        // Arrange
+        var ticket = new Ticket { Id = 1, Name = "Test", StatusId = "open" };
+        _mockContext.Setup(c => c.Tickets.Find(1)).Returns(ticket);
+
+        // Act
+        var result = _controller.MarkCompleted(1);
+
+        // Assert
+        var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirectToActionResult.ActionName);
+        Assert.Equal("closed", ticket.StatusId);
+        _mockContext.Verify(c => c.SaveChanges(), Times.Once);
+    }
+
+    [Fact]
+    public void DeleteComplete_Post_RemovesClosedTicketsAndRedirectsToIndex()
+    {
+        // Arrange
+        var tickets = new List<Ticket>
+        {
+            new Ticket { Id = 1, StatusId = "closed" },
+            new Ticket { Id = 2, StatusId = "open" },
+            new Ticket { Id = 3, StatusId = "closed" }
+        };
+        _mockContext.Setup(c => c.Tickets.Where(t => t.StatusId == "closed")).Returns(tickets.Where(t => t.StatusId == "closed").AsQueryable());
+
+        // Act
+        var result = _controller.DeleteComplete("1-closed");
+
+        // Assert
+        var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirectToActionResult.ActionName);
+        _mockContext.Verify(c => c.Tickets.Remove(It.Is<Ticket>(t => t.StatusId == "closed")), Times.Exactly(2));
+        _mockContext.Verify(c => c.SaveChanges(), Times.Once);
     }
 }
