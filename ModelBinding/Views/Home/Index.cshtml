@@ -57,7 +57,11 @@
                 <td>@task.DueDate?.ToShortDateString()</td>
                 <td>@task.Category?.Name</td>
                 <td>@task.Status?.Name</td>
+               
                 <td>@(task.Overdue ? "Yes" : "No")</td>
+                <td>
+                    <vc:status-buttons current-status="@(task.Status?.Name)"></vc:status-buttons>
+                </td>
                 <td>
                     @if (task.StatusId == "open")
                     {
